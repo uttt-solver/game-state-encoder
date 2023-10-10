@@ -44,6 +44,7 @@ enum GridState {
     E(GridNotEndState),
 }
 
+#[derive(Clone, Copy)]
 struct BoardNotEndState {
     a: GridState,
     b: GridState,
@@ -56,6 +57,7 @@ struct BoardNotEndState {
     i: GridState,
 }
 
+#[derive(Clone, Copy)]
 enum BoardState {
     O,
     X,
@@ -348,7 +350,6 @@ fn unpack_cell_state_from_bools(source: &mut Vec<bool>) -> CellState {
         (false, true) => CellState::O,
         (true, false) => CellState::X,
         (true, true) => CellState::D,
-        _ => panic!("invalid pack"),
     }
 }
 
@@ -460,34 +461,78 @@ fn unpack_game_state_from_base64(encoded: &str) -> GameState {
 }
 
 fn main() {
-    let game_state = GameState {
-        turn: Player::X,
-        position: GridPosition::A,
-        board: BoardState::E(BoardNotEndState {
-            a: GridState::E(GridNotEndState {
-                a: CellState::X,
-                b: CellState::E,
-                c: CellState::X,
-                d: CellState::X,
-                e: CellState::E,
-                f: CellState::O,
-                g: CellState::O,
-                h: CellState::E,
-                i: CellState::O,
-            }),
-            b: GridState::O,
-            c: GridState::X,
-            d: GridState::O,
-            e: GridState::X,
-            f: GridState::X,
-            g: GridState::O,
-            h: GridState::O,
-            i: GridState::O,
-        }),
+    let empty_grid = GridNotEndState {
+        a: CellState::E,
+        b: CellState::E,
+        c: CellState::E,
+        d: CellState::E,
+        e: CellState::E,
+        f: CellState::E,
+        g: CellState::E,
+        h: CellState::E,
+        i: CellState::E,
     };
-    println!("{}", game_state.board);
-    let encoded = pack_game_state_to_base64(&game_state);
-    println!("{}", encoded);
-    let decoded = unpack_game_state_from_base64(&encoded);
-    println!("{}", pack_game_state_to_base64(&decoded));
+    let empty_board = BoardNotEndState {
+        a: GridState::E(empty_grid),
+        b: GridState::E(empty_grid),
+        c: GridState::E(empty_grid),
+        d: GridState::E(empty_grid),
+        e: GridState::E(empty_grid),
+        f: GridState::E(empty_grid),
+        g: GridState::E(empty_grid),
+        h: GridState::E(empty_grid),
+        i: GridState::E(empty_grid),
+    };
+    println!(
+        "{}",
+        pack_game_state_to_base64(&unpack_game_state_from_base64(&pack_game_state_to_base64(
+            &GameState {
+                turn: Player::O,
+                position: GridPosition::S,
+                board: BoardState::E(empty_board),
+            }
+        )))
+    );
+    macro_rules! print_initial_game_state {
+        ($position:ident, $board:ident, $grid:ident) => {
+            let grid = GridState::E(GridNotEndState {
+                $grid: CellState::O,
+                ..empty_grid
+            });
+            let board = BoardState::E(BoardNotEndState {
+                $board: grid,
+                ..empty_board
+            });
+            println!(
+                "{}",
+                pack_game_state_to_base64(&GameState {
+                    turn: Player::X,
+                    position: GridPosition::$position,
+                    board,
+                })
+            );
+        };
+    }
+    macro_rules! print_initial_game_states {
+        ($position:ident, $board:ident) => {
+            print_initial_game_state!($position, $board, a);
+            print_initial_game_state!($position, $board, b);
+            print_initial_game_state!($position, $board, c);
+            print_initial_game_state!($position, $board, d);
+            print_initial_game_state!($position, $board, e);
+            print_initial_game_state!($position, $board, f);
+            print_initial_game_state!($position, $board, g);
+            print_initial_game_state!($position, $board, h);
+            print_initial_game_state!($position, $board, i);
+        };
+    }
+    print_initial_game_states!(A, a);
+    print_initial_game_states!(B, b);
+    print_initial_game_states!(C, c);
+    print_initial_game_states!(D, d);
+    print_initial_game_states!(E, e);
+    print_initial_game_states!(F, f);
+    print_initial_game_states!(G, g);
+    print_initial_game_states!(H, h);
+    print_initial_game_states!(I, i);
 }
