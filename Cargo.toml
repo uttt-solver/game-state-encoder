@@ -1,0 +1,6 @@
+[package]
+name = "uttt-solver-game-state-encoder"
+publish = false
+version = "0.1.0"
+
+[dependencies]
