@@ -1,4 +1,7 @@
-use std::fmt::{self, Display};
+use std::{
+    fmt::{self, Display},
+    io,
+};
 
 #[derive(Debug, Clone, Copy)]
 enum CellState {
@@ -512,27 +515,31 @@ fn main() {
                 })
             );
         };
-    }
-    macro_rules! print_initial_game_states {
-        ($position:ident, $board:ident) => {
-            print_initial_game_state!($position, $board, a);
-            print_initial_game_state!($position, $board, b);
-            print_initial_game_state!($position, $board, c);
-            print_initial_game_state!($position, $board, d);
-            print_initial_game_state!($position, $board, e);
-            print_initial_game_state!($position, $board, f);
-            print_initial_game_state!($position, $board, g);
-            print_initial_game_state!($position, $board, h);
-            print_initial_game_state!($position, $board, i);
+        ($board:ident) => {
+            print_initial_game_state!(A, $board, a);
+            print_initial_game_state!(B, $board, b);
+            print_initial_game_state!(C, $board, c);
+            print_initial_game_state!(D, $board, d);
+            print_initial_game_state!(E, $board, e);
+            print_initial_game_state!(F, $board, f);
+            print_initial_game_state!(G, $board, g);
+            print_initial_game_state!(H, $board, h);
+            print_initial_game_state!(I, $board, i);
         };
     }
-    print_initial_game_states!(A, a);
-    print_initial_game_states!(B, b);
-    print_initial_game_states!(C, c);
-    print_initial_game_states!(D, d);
-    print_initial_game_states!(E, e);
-    print_initial_game_states!(F, f);
-    print_initial_game_states!(G, g);
-    print_initial_game_states!(H, h);
-    print_initial_game_states!(I, i);
+    print_initial_game_state!(a);
+    print_initial_game_state!(b);
+    print_initial_game_state!(c);
+    print_initial_game_state!(d);
+    print_initial_game_state!(e);
+    print_initial_game_state!(f);
+    print_initial_game_state!(g);
+    print_initial_game_state!(h);
+    print_initial_game_state!(i);
+
+    loop {
+        let mut line = String::new();
+        io::stdin().read_line(&mut line).unwrap();
+        println!("{}", unpack_game_state_from_base64(line.trim()).board);
+    }
 }
