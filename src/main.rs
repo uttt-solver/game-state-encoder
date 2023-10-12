@@ -499,7 +499,7 @@ fn main() {
     macro_rules! print_initial_game_state {
         ($position:ident, $board:ident, $grid:ident) => {
             let grid = GridState::E(GridNotEndState {
-                $grid: CellState::O,
+                $grid: CellState::X,
                 ..empty_grid
             });
             let board = BoardState::E(BoardNotEndState {
@@ -509,7 +509,7 @@ fn main() {
             println!(
                 "{}",
                 pack_game_state_to_base64(&GameState {
-                    turn: Player::X,
+                    turn: Player::O,
                     position: GridPosition::$position,
                     board,
                 })
